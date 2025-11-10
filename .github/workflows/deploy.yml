@@ -1,0 +1,30 @@
+name: 🚀 Deploy to inet via FTP
+
+on:
+  push:
+    branches:
+      - main   # chạy khi push lên main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Checkout source
+        uses: actions/checkout@v4
+
+      - name: 📦 Upload files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT || 21 }}
+          protocol: ftp
+          local-dir: ./               # thư mục local cần upload
+          server-dir: ${{ secrets.FTP_SERVER_DIR || 'public_html/' }}
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/README.md
